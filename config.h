@@ -40,6 +40,15 @@
 /* Support a verbose mode */
 #undef DBUS_ENABLE_VERBOSE_MODE
 
+/* Enables message caching mechanism in DBUS
+ * TODO: Pending changes in configure.in for having dynamic support for
+ *       enabling/disabling this feature.
+ *       Currently to enable this feature replace the undef with the
+ *       following
+ *       #define DBUS_ENABLE_MSG_CACHING 1
+ */
+#undef DBUS_ENABLE_MSG_CACHING
+
 /* Defined if gcov is enabled to force a rebuild due to config.h changing */
 #undef DBUS_GCOV_ENABLED
 
