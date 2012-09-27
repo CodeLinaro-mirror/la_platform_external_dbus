@@ -768,7 +768,7 @@ dbus_bus_set_unique_name (DBusConnection *connection,
                           const char     *unique_name)
 {
   BusData *bd;
-  dbus_bool_t success;
+  dbus_bool_t success = FALSE;
 
   _dbus_return_val_if_fail (connection != NULL, FALSE);
   _dbus_return_val_if_fail (unique_name != NULL, FALSE);
@@ -777,13 +777,14 @@ dbus_bus_set_unique_name (DBusConnection *connection,
   
   bd = ensure_bus_data (connection);
   if (bd == NULL)
-    return FALSE;
+    goto out;
 
   _dbus_assert (bd->unique_name == NULL);
   
   bd->unique_name = _dbus_strdup (unique_name);
   success = bd->unique_name != NULL;
-  
+
+out:
   _DBUS_UNLOCK (bus_datas);
   
   return success;
@@ -811,7 +812,7 @@ const char*
 dbus_bus_get_unique_name (DBusConnection *connection)
 {
   BusData *bd;
-  const char *unique_name;
+  const char *unique_name = NULL;
 
   _dbus_return_val_if_fail (connection != NULL, NULL);
 
@@ -819,12 +820,13 @@ dbus_bus_get_unique_name (DBusConnection *connection)
   
   bd = ensure_bus_data (connection);
   if (bd == NULL)
-    return NULL;
+    goto out;
 
   unique_name = bd->unique_name;
 
+out:
   _DBUS_UNLOCK (bus_datas);
-  
+
   return unique_name;
 }
 
