@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2002, 2003, 2004, 2005  Red Hat Inc.
  * Copyright (C) 2002, 2003  CodeFactory AB
+ * Copyright (c) 2012, 2013  Code Aurora Forum.  All Rights Reserved.
  *
  * Licensed under the Academic Free License version 2.1
  *
@@ -617,6 +618,8 @@ dbus_message_cache_or_finalize (DBusMessage *message)
 
   was_cached = FALSE;
 
+//Caching mechanism is disabled
+#ifdef DBUS_ENABLE_MSG_CACHING
   _DBUS_LOCK (message_cache);
 
   if (!message_cache_shutdown_registered)
@@ -665,7 +668,9 @@ dbus_message_cache_or_finalize (DBusMessage *message)
   _dbus_assert (_dbus_atomic_get (&message->refcount) == 0);
 
   _DBUS_UNLOCK (message_cache);
-  
+#endif /* end of DBUS_ENABLE_MSG_CACHING */
+
+  _dbus_verbose ("dbus message cache status: %d\n", was_cached);
   if (!was_cached)
     dbus_message_finalize (message);
 }
@@ -1077,11 +1082,13 @@ dbus_message_finalize (DBusMessage *message)
 static DBusMessage*
 dbus_message_new_empty_header (void)
 {
-  DBusMessage *message;
+  DBusMessage *message = NULL;
   dbus_bool_t from_cache;
 
+//Caching mechanism is disabled
+#ifdef DBUS_ENABLE_MSG_CACHING
   message = dbus_message_get_cached ();
-
+#endif /* end of DBUS_ENABLE_MSG_CACHING */
   if (message != NULL)
     {
       from_cache = TRUE;
